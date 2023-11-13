@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = location.origin.includes("localhost");
 
 function preload() {
   Assets.preload();
