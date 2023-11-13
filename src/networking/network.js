@@ -56,7 +56,7 @@ class NetRoom {
     });
     this.peer.on("connection", (connection) => {
       console.log("New player connected to room:", connection.peer);
-      this.connections = [connection, ...(this.connections ?? [])];
+      this.connections = [...(this.connections ?? []), connection];
       console.log("Current player amount:", this.connections.length);
 
       connection.on("data", (data) => {

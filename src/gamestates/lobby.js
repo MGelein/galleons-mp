@@ -49,6 +49,7 @@ class Lobby extends GameState {
   }
 
   onStateChange() {
+    console.log(this.state);
     this.owner = this.state.players[0];
     this.title.setText(`Lobby of ${this.owner}`);
     this.gameModeSelector.setSelectedValue(this.state.mode);
