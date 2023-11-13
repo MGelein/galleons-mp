@@ -8,6 +8,14 @@ function leftStickUp() {
   return contro.leftStick.y < -DEADZONE;
 }
 
+function leftStickRight() {
+  return contro.leftStick.x > DEADZONE;
+}
+
+function leftStickLeft() {
+  return contro.leftStick.x < -DEADZONE;
+}
+
 function controAny() {
   if (contro.presses("a")) return true;
   if (contro.presses("b")) return true;

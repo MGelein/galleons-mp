@@ -1,13 +1,17 @@
 class Label {
   constructor(text, color, size, x, y) {
     this.interactive = !text.startsWith("!");
-    this.text = text.replace("!", "");
     this.size = size;
     this.color = color;
     this.x = x;
     this.y = y;
     this.shadow = null;
+    this.setText(text);
+  }
+
+  setText(text) {
     textSize(this.size);
+    this.text = text.replace("!", "");
     this.w = textWidth(this.text);
     this.h = this.size * 0.9;
     this.hw = this.w / 2;

@@ -2,6 +2,9 @@ const GAME_ID = "nl-trb1914-galleons";
 const PLAYER_JOIN = "playerJoin";
 const PLAYER_LIST = "playerList";
 const DISCONNECT = "disconnect";
+const STATE_REQ = "stateRequest";
+const STATE_EDIT = "stateEdit";
+const STATE = "state";
 
 let netPlayer;
 let netRoom;
@@ -45,6 +48,7 @@ class NetPlayer {
 
 class NetRoom {
   constructor(player) {
+    this.state = {};
     this.peer = new Peer(`${GAME_ID}-ROOM-${player.name}`);
     this.peer.on("open", (id) => {
       this.id = id;
@@ -61,8 +65,17 @@ class NetRoom {
       connection.on("data", (data) => {
         const { command, payload } = data;
         if (command === PLAYER_JOIN) {
-          this.sendAll(PLAYER_LIST, this.players);
+          this.sendAll(STATE_EDIT, { ...this.state, players: this.players });
           return;
+        }
+
+        if (command === STATE_REQ) {
+          connection.send({ command: STATE, payload: this.state });
+          return;
+        }
+
+        if (command === STATE_EDIT) {
+          this.state = { ...this.state, ...payload };
         }
 
         this.sendAll(command, payload);
@@ -76,6 +89,14 @@ class NetRoom {
         });
       });
     });
+  }
+
+  prepareLobbyState() {
+    this.state = {
+      players: this.players,
+      mode: "deathmatch",
+      duration: 300,
+    };
   }
 
   sendAll(command, payload) {
