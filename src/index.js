@@ -1,4 +1,4 @@
-const DEBUG = location.origin.includes("localhost");
+const DEBUG = location.port === "5500";
 
 function preload() {
   Assets.preload();
