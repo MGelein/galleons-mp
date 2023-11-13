@@ -8,6 +8,7 @@ class ModeSlider {
     this.labels = [];
     this.active = true;
     this.scrollTimeout = 10;
+    this.onChangeCb = () => {};
   }
 
   setOptions(options) {
@@ -18,6 +19,16 @@ class ModeSlider {
     });
   }
 
+  setSelectedValue(value) {
+    const index = this.options.indexOf(value);
+    if (index === -1) return console.log("Cant set mode selection to", value);
+    this.selected = index;
+  }
+
+  onChange(callback) {
+    this.onChangeCb = callback;
+  }
+
   draw() {
     this.labels[this.selected].draw();
   }
@@ -26,6 +37,7 @@ class ModeSlider {
     this.timeout--;
 
     if (this.timeout < 0 && this.active) {
+      const wasSelected = this.selected;
       if (kb.presses("left") || contro.presses("left") || leftStickLeft()) {
         this.selected--;
         this.timeout = this.scrollTimeout;
@@ -36,6 +48,7 @@ class ModeSlider {
       }
       const optionAmount = this.options.length;
       this.selected = (this.selected + optionAmount) % optionAmount;
+      if (this.selected !== wasSelected) this.onChangeCb(this.value);
     }
   }
 

@@ -39,10 +39,7 @@ class NetPlayer {
   }
 
   sendCommand(command, payload) {
-    this.connection?.send({
-      command,
-      payload: { ...payload, from: this.id },
-    });
+    this.connection?.send({ command, payload });
   }
 }
 
@@ -94,7 +91,7 @@ class NetRoom {
   prepareLobbyState() {
     this.state = {
       players: this.players,
-      mode: "deathmatch",
+      mode: "Deathmatch",
       duration: 300,
     };
   }
