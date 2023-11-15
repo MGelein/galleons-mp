@@ -92,7 +92,7 @@ class NetRoom {
     this.state = {
       players: this.players,
       mode: "Deathmatch",
-      duration: 300,
+      duration: 5,
     };
   }
 

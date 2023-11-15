@@ -2,6 +2,7 @@ class ModeSlider {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+    this.fontSize = 36;
     this.timeout = 0;
     this.selected = 0;
     this.options = [];
@@ -11,10 +12,28 @@ class ModeSlider {
     this.onChangeCb = () => {};
   }
 
+  setLabel(label, offsetX) {
+    this.label = new Label(
+      label,
+      Colors.brown,
+      this.fontSize,
+      this.x + (offsetX ?? -this.maxWidth),
+      this.y
+    );
+  }
+
   setOptions(options) {
     this.options = options;
+    this.maxWidth = 0;
     this.labels = this.options.map((option, i) => {
-      const label = new Label(option, Colors.brown, 36, this.x, this.y);
+      const label = new Label(
+        option,
+        Colors.brown,
+        this.fontSize,
+        this.x,
+        this.y
+      );
+      if (label.w > this.maxWidth) this.maxWidth = label.w;
       return label;
     });
   }
@@ -31,6 +50,7 @@ class ModeSlider {
 
   draw() {
     this.labels[this.selected].draw();
+    this.label?.draw();
   }
 
   update() {
