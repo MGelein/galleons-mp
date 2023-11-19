@@ -11,6 +11,8 @@ class Lobby extends GameState {
     this.state = {};
     this.title = new Label("Lobby", Colors.brown, 100, width / 2, 50);
 
+    this.shipSelector = new ShipSelector(100);
+
     this.gameModeSelector = new ModeSlider(width / 2, 150);
     this.gameModeSelector.setOptions(["King of the Hill", "Deathmatch"]);
     this.gameModeSelector.setLabel("Gamemode: ");
@@ -78,6 +80,7 @@ class Lobby extends GameState {
   drawUI() {
     this.gameModeSelector.draw();
     this.gameTimeSelector.draw();
+    this.shipSelector.draw();
     this.title.draw();
   }
 

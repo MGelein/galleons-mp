@@ -91,6 +91,7 @@ class NetRoom {
   prepareLobbyState() {
     this.state = {
       players: this.players,
+      ships: {},
       mode: "Deathmatch",
       duration: 5,
     };
