@@ -36,11 +36,11 @@ class Options {
     if (this.timeout < 0) {
       if (kb.presses("down") || contro.presses("down") || leftStickDown()) {
         this.selected--;
-        this.timeout = this.scrollTimeout;
+        this.timeout = config.scrollTimeout;
       }
       if (kb.presses("up") || contro.presses("up") || leftStickUp()) {
         this.selected++;
-        this.timeout = this.scrollTimeout;
+        this.timeout = config.scrollTimeout;
       }
 
       if (kb.presses("enter") || kb.presses("space") || contro.presses("a")) {

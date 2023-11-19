@@ -7,6 +7,17 @@ class Label {
     this.y = y;
     this.shadow = null;
     this.setText(text);
+    this.align = 0;
+  }
+
+  setAlign(align) {
+    if (align === "left") {
+      this.align = this.hw;
+    } else if (align === "right") {
+      this.align = -this.hw;
+    } else {
+      this.align = 0;
+    }
   }
 
   setText(text) {
@@ -33,7 +44,7 @@ class Label {
   draw() {
     push();
     textSize(this.size);
-    translate(this.x, this.y);
+    translate(this.x + this.align, this.y);
     const x = -this.hw;
     const y = this.hh * 0.9;
     if (this.shadow) {

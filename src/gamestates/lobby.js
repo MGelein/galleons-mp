@@ -4,6 +4,8 @@ class Lobby extends GameState {
   }
 
   setup() {
+    this.uiIndex = 0;
+    this.timeout = 100;
     this.isOwner = !!netRoom;
     this.owner = "";
     this.state = {};
@@ -16,7 +18,7 @@ class Lobby extends GameState {
       netPlayer.sendCommand(STATE_EDIT, { mode: value });
     });
 
-    this.gameTimeSelector = new ModeSlider(width / 2, 200);
+    this.gameTimeSelector = new ModeSlider(width / 2, 220);
     this.gameTimeSelector.setOptions([
       "1 minute",
       "2 minutes",
@@ -35,6 +37,8 @@ class Lobby extends GameState {
       netPlayer.sendCommand(STATE_EDIT, { duration: timeInMinutes });
     });
 
+    this.uiComponents = [this.gameModeSelector, this.gameTimeSelector];
+
     this.menuBg = new MenuBG();
     Sounds.playBGM("waves");
     netRoom?.prepareLobbyState();
@@ -46,6 +50,24 @@ class Lobby extends GameState {
     if (this.isOwner) {
       this.gameModeSelector.update();
       this.gameTimeSelector.update();
+    }
+
+    this.uiComponents.forEach((ui) => (ui.active = false));
+    this.uiComponents[this.uiIndex].active = true;
+
+    this.timeout--;
+
+    if (this.timeout < 0) {
+      if (kb.presses("down") || contro.presses("down") || leftStickDown()) {
+        this.uiIndex++;
+        this.timeout = config.scrollTimeout;
+      }
+      if (kb.presses("up") || contro.presses("up") || leftStickUp()) {
+        this.uiIndex--;
+        this.timeout = config.scrollTimeout;
+      }
+      const totalComponents = this.uiComponents.length;
+      this.uiIndex = (this.uiIndex + totalComponents) % totalComponents;
     }
   }
 

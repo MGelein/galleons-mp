@@ -12,19 +12,13 @@ class ModeSlider {
     this.onChangeCb = () => {};
   }
 
-  setLabel(label, offsetX) {
-    this.label = new Label(
-      label,
-      Colors.brown,
-      this.fontSize,
-      this.x + (offsetX ?? -this.maxWidth),
-      this.y
-    );
+  setLabel(label) {
+    this.label = new Label(label, Colors.brown, this.fontSize, this.x, this.y);
+    this.label.setAlign("right");
   }
 
   setOptions(options) {
     this.options = options;
-    this.maxWidth = 0;
     this.labels = this.options.map((option, i) => {
       const label = new Label(
         option,
@@ -33,7 +27,7 @@ class ModeSlider {
         this.x,
         this.y
       );
-      if (label.w > this.maxWidth) this.maxWidth = label.w;
+      label.setAlign("left");
       return label;
     });
   }
@@ -51,20 +45,34 @@ class ModeSlider {
   draw() {
     this.labels[this.selected].draw();
     this.label?.draw();
+
+    if (this.active) {
+      push();
+      tint(Colors.brown);
+      translate(
+        this.x - Assets.uiTimeselector.height / 2,
+        this.y + Assets.uiTimeselector.width / 2
+      );
+      rotate(-90);
+      image(Assets.uiTimeselector, 0, 0);
+      noTint();
+      pop();
+    }
   }
 
   update() {
     this.timeout--;
+    if (!this.active) return;
 
     if (this.timeout < 0 && this.active) {
       const wasSelected = this.selected;
       if (kb.presses("left") || contro.presses("left") || leftStickLeft()) {
         this.selected--;
-        this.timeout = this.scrollTimeout;
+        this.timeout = config.scrollTimeout;
       }
       if (kb.presses("right") || contro.presses("right") || leftStickRight()) {
         this.selected++;
-        this.timeout = this.scrollTimeout;
+        this.timeout = config.scrollTimeout;
       }
       const optionAmount = this.options.length;
       this.selected = (this.selected + optionAmount) % optionAmount;
