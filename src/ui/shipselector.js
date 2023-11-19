@@ -10,9 +10,17 @@ const SHIP_NAMES = [
 const SHIP_COLORS = ["blue", "yellow", "white", "black", "red", "green"];
 
 class ShipSelector {
+  static SS_WIDTH = 280;
+  static SS_GAP = 30;
+  static SS_SPACING = this.SS_WIDTH + this.SS_GAP;
+
+  static getOffset() {
+    const leftOver = width - 4 * (this.SS_WIDTH + this.SS_GAP);
+    return leftOver / 2;
+  }
+
   constructor(x) {
-    this.active = false;
-    this.w = Assets.uiPlayerselectorBg.width;
+    this.w = ShipSelector.SS_WIDTH;
     this.h = Assets.uiPlayerselectorBg.height;
     this.x = x;
     this.y = height - this.h - 30;
@@ -42,15 +50,11 @@ class ShipSelector {
     this.onChangeCb = callback;
   }
 
-  onReadyChange(callback) {
-    this.onReadyChangeCb = callback;
-  }
-
   setPlayer(player) {
     this.player = player;
     this.connected = !!this.player;
     this.playerLabel.setText(player ?? "Empty");
-    this.playerLabel.color = this.connected ? Colors.white : color(200);
+    this.playerLabel.color = this.connected ? Colors.brown : color(255, 200);
   }
 
   setUIPrompt(name) {
@@ -84,7 +88,10 @@ class ShipSelector {
       pressBReady
     ) {
       this.ready = !this.ready;
-      this.onReadyChangeCb?.(this.ready);
+      this.onChangeCb?.({
+        color: SHIP_COLORS[this.shipIndex],
+        ready: this.ready,
+      });
       this.setUIPrompt(this.ready ? "B" : "A");
     }
 
@@ -101,15 +108,19 @@ class ShipSelector {
       const optionAmount = this.sprites.length;
       this.shipIndex = (this.shipIndex + optionAmount) % optionAmount;
       if (this.shipIndex !== wasSelected) {
-        this.onChangeCb?.(this.value);
         this.setColor(SHIP_COLORS[this.shipIndex]);
+        this.onChangeCb?.({
+          color: SHIP_COLORS[this.shipIndex],
+          ready: this.ready,
+        });
       }
     }
   }
 
   draw() {
     push();
-    tint(255, this.connected ? 255 : 200);
+    this.tintColor = this.connected ? Colors.brown : color(255, 200);
+    tint(this.tintColor);
     translate(this.x, this.y);
     image(Assets.uiPlayerselectorBg, 0, 0);
     this.playerLabel.draw();

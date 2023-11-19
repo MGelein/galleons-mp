@@ -4,14 +4,18 @@ class Lobby extends GameState {
   }
 
   setup() {
+    this.player = storage.get("username");
     this.uiIndex = 0;
     this.timeout = 100;
     this.isOwner = !!netRoom;
-    this.owner = "";
     this.state = {};
     this.title = new Label("Lobby", Colors.brown, 100, width / 2, 50);
 
-    this.shipSelector = new ShipSelector(100);
+    this.shipSelectors = [];
+    for (let i = 0; i < 4; i++) {
+      let x = ShipSelector.getOffset() + i * ShipSelector.SS_SPACING;
+      this.shipSelectors.push(new ShipSelector(x));
+    }
 
     this.gameModeSelector = new ModeSlider(width / 2, 150);
     this.gameModeSelector.setOptions(["King of the Hill", "Deathmatch"]);
@@ -43,8 +47,7 @@ class Lobby extends GameState {
 
     this.menuBg = new MenuBG();
     Sounds.playBGM("waves");
-    netRoom?.prepareLobbyState();
-    netPlayer.sendCommand(STATE_REQ);
+    netPlayer.sendCommand(PLAYER_JOIN);
   }
 
   update() {
@@ -55,7 +58,9 @@ class Lobby extends GameState {
     }
 
     this.uiComponents.forEach((ui) => (ui.active = false));
-    this.uiComponents[this.uiIndex].active = true;
+    const activeUI = this.uiComponents[this.uiIndex];
+    if (activeUI) activeUI.active = true;
+    else this.myShipSelector?.update();
 
     this.timeout--;
 
@@ -68,8 +73,8 @@ class Lobby extends GameState {
         this.uiIndex--;
         this.timeout = config.scrollTimeout;
       }
-      const totalComponents = this.uiComponents.length;
-      this.uiIndex = (this.uiIndex + totalComponents) % totalComponents;
+      const totalComponents = this.uiComponents.length + 1;
+      this.uiIndex = constrain(this.uiIndex, 0, totalComponents);
     }
   }
 
@@ -80,7 +85,7 @@ class Lobby extends GameState {
   drawUI() {
     this.gameModeSelector.draw();
     this.gameTimeSelector.draw();
-    this.shipSelector.draw();
+    this.shipSelectors.forEach((ss) => ss.draw());
     this.title.draw();
   }
 
@@ -99,10 +104,20 @@ class Lobby extends GameState {
 
   onStateChange() {
     console.log(this.state);
-    this.owner = this.state.players[0];
-    this.title.setText(`Lobby of ${this.owner}`);
+    this.owner = this.state.owner;
+    this.title.setText(`Lobby of ${this.state.owner}`);
     this.gameModeSelector.setSelectedValue(this.state.mode);
     this.gameTimeSelector.setSelectedValue(`${this.state.duration} minutes`);
+    this.state.players.forEach((player, i) => {
+      this.shipSelectors[i].setPlayer(player);
+      this.shipSelectors[i].setColor(this.state[player].color);
+      if (player === this.player) this.myShipSelector = this.shipSelectors[i];
+    });
+    this.myShipSelector.onChange((state) => {
+      const edit = {};
+      edit[this.player] = { ...state };
+      netPlayer.sendCommand(STATE_EDIT, edit);
+    });
   }
 }
 

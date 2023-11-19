@@ -31,7 +31,6 @@ class NetPlayer {
       this.connection.on("data", ({ command, payload }) => {
         GameState.onCommand(command, payload);
       });
-      this.sendCommand(PLAYER_JOIN, {});
     });
     this.connection.on("close", () => {
       this.inRoom = false;
@@ -46,6 +45,7 @@ class NetPlayer {
 class NetRoom {
   constructor(player) {
     this.state = {};
+    this.connections = [];
     this.peer = new Peer(`${GAME_ID}-ROOM-${player.name}`);
     this.peer.on("open", (id) => {
       this.id = id;
@@ -56,13 +56,16 @@ class NetRoom {
     });
     this.peer.on("connection", (connection) => {
       console.log("New player connected to room:", connection.peer);
-      this.connections = [...(this.connections ?? []), connection];
+      this.connections = [...this.connections, connection];
       console.log("Current player amount:", this.connections.length);
 
       connection.on("data", (data) => {
         const { command, payload } = data;
         if (command === PLAYER_JOIN) {
-          this.sendAll(STATE_EDIT, { ...this.state, players: this.players });
+          const newState = addNewPlayer(this.state, this.players);
+          this.sendAll(STATE_EDIT, {
+            ...newState,
+          });
           return;
         }
 
@@ -90,8 +93,8 @@ class NetRoom {
 
   prepareLobbyState() {
     this.state = {
-      players: this.players,
-      ships: {},
+      owner: storage.get("username"),
+      players: [],
       mode: "Deathmatch",
       duration: 5,
     };
@@ -116,6 +119,7 @@ function createRoom() {
     return;
   }
   netRoom = new NetRoom(netPlayer);
+  netRoom.prepareLobbyState();
 
   const intervalId = setInterval(() => {
     if (netRoom.id) {
@@ -123,4 +127,24 @@ function createRoom() {
       netPlayer.connect(netPlayer.name);
     }
   }, 100);
+}
+
+function addNewPlayer(oldState, players) {
+  const state = { ...oldState, players };
+  const unassigned = players.filter((p) => !state[p]);
+
+  const availableColors = [...SHIP_COLORS];
+  players.forEach((p) => {
+    if (unassigned.indexOf(p) !== -1) return;
+    const playerColor = state[p];
+    availableColors.splice(availableColors.indexOf(playerColor), 1);
+  });
+
+  unassigned.forEach((unassignedPlayer) => {
+    state[unassignedPlayer] = {
+      ready: false,
+      color: availableColors.pop(),
+    };
+  });
+  return state;
 }

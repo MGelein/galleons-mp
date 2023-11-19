@@ -9,7 +9,7 @@ function setup() {
   GameState.setActive("boot");
   setupCanvas();
 
-  if (DEBUG) GameState.setActive("testing");
+  if (DEBUG) GameState.setActive("mainmenu");
 }
 
 function draw() {
