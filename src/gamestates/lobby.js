@@ -43,7 +43,9 @@ class Lobby extends GameState {
       netPlayer.sendCommand(STATE_EDIT, { duration: timeInMinutes });
     });
 
-    this.uiComponents = [this.gameModeSelector, this.gameTimeSelector];
+    this.uiComponents = this.isOwner
+      ? [this.gameModeSelector, this.gameTimeSelector]
+      : [];
 
     this.menuBg = new MenuBG();
     Sounds.playBGM("waves");
@@ -113,6 +115,7 @@ class Lobby extends GameState {
     this.state.players.forEach((player, i) => {
       this.shipSelectors[i].setPlayer(player);
       this.shipSelectors[i].setColor(this.state[player].color);
+      this.shipSelectors[i].setReady(this.state[player].ready);
       if (player === this.player) this.myShipSelector = this.shipSelectors[i];
     });
     this.myShipSelector.onChange((state) => {

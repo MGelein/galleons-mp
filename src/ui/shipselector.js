@@ -50,6 +50,10 @@ class ShipSelector {
     this.onChangeCb = callback;
   }
 
+  setReady(ready) {
+    this.setUIPrompt(ready ? "A" : "B");
+  }
+
   setPlayer(player) {
     this.player = player;
     this.connected = !!this.player;
@@ -133,8 +137,8 @@ class ShipSelector {
         scale(-1, 1);
         image(Assets.uiArrow, -70, 220);
         scale(-1, 1);
-        noTint();
       }
+      noTint();
       image(this.sprite, this.spriteX, 200);
 
       tint(this.uiTint);
