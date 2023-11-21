@@ -84,10 +84,9 @@ class NetRoom {
 
       connection.on("close", () => {
         this.connections.splice(this.connections.indexOf(connection), 1);
-
-        this.connections.forEach((conn) => {
-          conn.send({ command: DISCONNECT, payload: connection.peer });
-        });
+        const username = connection.peer.replace(`${GAME_ID}-`, "");
+        const newState = removePlayer(username, this.state, this.players);
+        this.sendAll(STATE_EDIT, { ...newState });
       });
     });
   }
@@ -159,5 +158,11 @@ function addNewPlayer(oldState, players) {
       color: availableColors.pop(),
     };
   });
+  return state;
+}
+
+function removePlayer(player, oldState, players) {
+  const state = { ...oldState, players };
+  delete state[player];
   return state;
 }

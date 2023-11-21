@@ -79,7 +79,6 @@ class ShipSelector {
   }
 
   setColor(colorName) {
-    this.wasSelectedIndex = this.shipIndex;
     this.shipIndex = SHIP_COLORS.indexOf(colorName);
 
     while (this.claimed.some((claim) => claim === this.shipIndex)) {
@@ -89,13 +88,14 @@ class ShipSelector {
     }
 
     this.shipLabel.setText(SHIP_NAMES[this.shipIndex]);
+    const prevSprite = this.sprite;
     this.sprite = this.sprites[this.shipIndex];
     this.spriteX = this.w / 2 - this.sprite.width / 2;
 
     if (colorName === "white") colorName === "cream";
     this.tintColor = Colors[colorName];
 
-    if (this.shipIndex !== this.wasSelectedIndex) {
+    if (prevSprite !== this.sprite) {
       this.onChangeCb?.({
         color: SHIP_COLORS[this.shipIndex],
         ready: this.ready,

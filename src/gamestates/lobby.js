@@ -109,11 +109,13 @@ class Lobby extends GameState {
   }
 
   onStateChange() {
+    console.log(this.state);
     this.claimedColors = [];
     this.owner = this.state.owner;
     this.title.setText(`Lobby of ${this.state.owner}`);
     this.gameModeSelector.setSelectedValue(this.state.mode);
     this.gameTimeSelector.setSelectedValue(`${this.state.duration} minutes`);
+    this.shipSelectors.forEach((ss) => ss.setPlayer(null));
     this.state.players.forEach((playerName, i) => {
       this.shipSelectors[i].setPlayer(playerName);
       const player = this.state[playerName];
