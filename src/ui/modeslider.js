@@ -7,7 +7,7 @@ class ModeSlider {
     this.selected = 0;
     this.options = [];
     this.labels = [];
-    this.active = true;
+    this.active = false;
     this.scrollTimeout = 10;
     this.onChangeCb = () => {};
   }

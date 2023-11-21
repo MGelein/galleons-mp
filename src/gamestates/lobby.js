@@ -9,6 +9,7 @@ class Lobby extends GameState {
     this.timeout = 100;
     this.isOwner = !!netRoom;
     this.state = {};
+    this.claimedColors = [];
     this.title = new Label("Lobby", Colors.brown, 100, width / 2, 50);
 
     this.shipSelectors = [];
@@ -108,16 +109,25 @@ class Lobby extends GameState {
   }
 
   onStateChange() {
+    this.claimedColors = [];
     this.owner = this.state.owner;
     this.title.setText(`Lobby of ${this.state.owner}`);
     this.gameModeSelector.setSelectedValue(this.state.mode);
     this.gameTimeSelector.setSelectedValue(`${this.state.duration} minutes`);
-    this.state.players.forEach((player, i) => {
-      this.shipSelectors[i].setPlayer(player);
-      this.shipSelectors[i].setColor(this.state[player].color);
-      this.shipSelectors[i].setReady(this.state[player].ready);
-      if (player === this.player) this.myShipSelector = this.shipSelectors[i];
+    this.state.players.forEach((playerName, i) => {
+      this.shipSelectors[i].setPlayer(playerName);
+      const player = this.state[playerName];
+      this.shipSelectors[i].setColor(player.color);
+      this.shipSelectors[i].setReady(player.ready);
+
+      if (player.ready) {
+        this.claimedColors.push(player.color);
+      }
+      if (playerName === this.player) {
+        this.myShipSelector = this.shipSelectors[i];
+      }
     });
+    this.myShipSelector.setClaimed(this.claimedColors);
     this.myShipSelector.onChange((state) => {
       const edit = {};
       edit[this.player] = { ...state };

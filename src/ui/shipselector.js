@@ -31,6 +31,8 @@ class ShipSelector {
     this.shipIndex = -1;
     this.timeout = 0;
     this.active = true;
+    this.wasSelectedIndex = 0;
+    this.claimed = [];
     this.sprites = [
       Assets.blueFull,
       Assets.yellowFull,
@@ -51,7 +53,8 @@ class ShipSelector {
   }
 
   setReady(ready) {
-    this.setUIPrompt(ready ? "A" : "B");
+    this.ready = ready;
+    this.setUIPrompt(ready ? "B" : "A");
   }
 
   setPlayer(player) {
@@ -69,14 +72,35 @@ class ShipSelector {
     this.uiPromptLabel.setText(isA ? "Ready?" : "Cancel");
   }
 
+  setClaimed(claimed) {
+    if (this.ready) return;
+    this.claimed = claimed.map((colorName) => SHIP_COLORS.indexOf(colorName));
+    this.setColor(SHIP_COLORS[this.shipIndex]);
+  }
+
   setColor(colorName) {
+    this.wasSelectedIndex = this.shipIndex;
     this.shipIndex = SHIP_COLORS.indexOf(colorName);
+
+    while (this.claimed.some((claim) => claim === this.shipIndex)) {
+      this.shipIndex++;
+      const optionAmount = this.sprites.length;
+      this.shipIndex = (this.shipIndex + optionAmount) % optionAmount;
+    }
+
     this.shipLabel.setText(SHIP_NAMES[this.shipIndex]);
     this.sprite = this.sprites[this.shipIndex];
     this.spriteX = this.w / 2 - this.sprite.width / 2;
 
     if (colorName === "white") colorName === "cream";
     this.tintColor = Colors[colorName];
+
+    if (this.shipIndex !== this.wasSelectedIndex) {
+      this.onChangeCb?.({
+        color: SHIP_COLORS[this.shipIndex],
+        ready: this.ready,
+      });
+    }
   }
 
   update() {
@@ -100,7 +124,6 @@ class ShipSelector {
     }
 
     if (this.timeout < 0 && this.active && !this.ready) {
-      const wasSelected = this.shipIndex;
       if (kb.presses("left") || contro.presses("left") || leftStickLeft()) {
         this.shipIndex--;
         this.timeout = config.scrollTimeout;
@@ -111,13 +134,7 @@ class ShipSelector {
       }
       const optionAmount = this.sprites.length;
       this.shipIndex = (this.shipIndex + optionAmount) % optionAmount;
-      if (this.shipIndex !== wasSelected) {
-        this.setColor(SHIP_COLORS[this.shipIndex]);
-        this.onChangeCb?.({
-          color: SHIP_COLORS[this.shipIndex],
-          ready: this.ready,
-        });
-      }
+      this.setColor(SHIP_COLORS[this.shipIndex]);
     }
   }
 
