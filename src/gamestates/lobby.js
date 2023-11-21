@@ -99,11 +99,13 @@ class Lobby extends GameState {
         this.state = { ...this.state, ...payload };
         this.onStateChange();
         break;
+      case LOAD_GAME:
+        GameState.setActive("game");
+        break;
     }
   }
 
   onStateChange() {
-    console.log(this.state);
     this.owner = this.state.owner;
     this.title.setText(`Lobby of ${this.state.owner}`);
     this.gameModeSelector.setSelectedValue(this.state.mode);
@@ -118,6 +120,16 @@ class Lobby extends GameState {
       edit[this.player] = { ...state };
       netPlayer.sendCommand(STATE_EDIT, edit);
     });
+
+    if (this.isOwner) {
+      const readyPlayers = this.state.players.reduce((readyCount, player) => {
+        if (this.state[player].ready) return readyCount + 1;
+        return readyCount;
+      }, 0);
+      const allReady = readyPlayers === this.state.players.length;
+
+      if (allReady) netRoom.prepareGameState();
+    }
   }
 }
 

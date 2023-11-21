@@ -5,6 +5,7 @@ const DISCONNECT = "disconnect";
 const STATE_REQ = "stateRequest";
 const STATE_EDIT = "stateEdit";
 const STATE = "state";
+const LOAD_GAME = "loadGame";
 
 let netPlayer;
 let netRoom;
@@ -98,6 +99,18 @@ class NetRoom {
       mode: "Deathmatch",
       duration: 5,
     };
+  }
+
+  prepareGameState() {
+    const duration = this.state.duration * 60;
+    const mode = this.state.mode;
+    this.state = {
+      owner: storage.get("username"),
+      players: this.players,
+      mode,
+      duration,
+    };
+    this.sendAll(LOAD_GAME);
   }
 
   sendAll(command, payload) {
