@@ -95,7 +95,7 @@ class ShipSelector {
       this.setUIPrompt(this.ready ? "B" : "A");
     }
 
-    if (this.timeout < 0 && this.active) {
+    if (this.timeout < 0 && this.active && !this.ready) {
       const wasSelected = this.shipIndex;
       if (kb.presses("left") || contro.presses("left") || leftStickLeft()) {
         this.shipIndex--;
@@ -127,12 +127,14 @@ class ShipSelector {
 
     if (this.shipIndex !== -1 && this.connected) {
       this.shipLabel.draw();
-      tint(this.tintColor);
-      image(Assets.uiArrow, this.w - 70, 220);
-      scale(-1, 1);
-      image(Assets.uiArrow, -70, 220);
-      scale(-1, 1);
-      noTint();
+      if (!this.ready) {
+        tint(this.tintColor);
+        image(Assets.uiArrow, this.w - 70, 220);
+        scale(-1, 1);
+        image(Assets.uiArrow, -70, 220);
+        scale(-1, 1);
+        noTint();
+      }
       image(this.sprite, this.spriteX, 200);
 
       tint(this.uiTint);
