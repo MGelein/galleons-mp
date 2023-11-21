@@ -39,7 +39,7 @@ class Lobby extends GameState {
     ]);
     this.gameTimeSelector.setLabel("Duration: ");
     this.gameTimeSelector.onChange((value) => {
-      const timeInMinutes = parseFloat(value.replace(/[^\d]+/g, ""));
+      const timeInMinutes = parseFloat(value.replace(" minutes", ""));
       netPlayer.sendCommand(STATE_EDIT, { duration: timeInMinutes });
     });
 
