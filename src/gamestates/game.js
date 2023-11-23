@@ -5,13 +5,14 @@ class Game extends GameState {
 
   setup() {
     this.map = new GameMap();
-    const ship = new Ship(100, 100, "red");
+    const ship = new Ship(width / 2, height / 2, "red");
     Ship.setControl(ship);
   }
 
   drawSprites() {
     this.map.drawSprites();
     Ship.drawAll();
+    Ship.followControl();
   }
 
   update() {

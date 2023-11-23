@@ -12,7 +12,6 @@ class GameMap {
 
     this.lagoonColliders = new Group();
     this.lagoonColliders.autoDraw = false;
-    this.lagoonColliders.color = "#000";
     this.lagoonColliders.collider = "static";
 
     new this.lagoonColliders.Sprite([
@@ -93,6 +92,5 @@ class GameMap {
     this.sea.draw();
     this.lagoon.draw();
     this.bases.draw();
-    this.lagoonColliders.draw();
   }
 }
