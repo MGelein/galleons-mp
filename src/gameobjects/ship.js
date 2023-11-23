@@ -90,7 +90,6 @@ class Ship {
     this.sprite.addCollider(0, 28, 40);
     this.sprite.image = Assets[`${color}Full`];
     this.sprite.friction = 0.1;
-    this.sprite.debug = true;
   }
 
   handleInput() {
