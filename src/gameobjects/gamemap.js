@@ -163,11 +163,24 @@ class GameMap {
     this.bases.push(baseBottomLeft);
     baseBottomLeft.rotation = 45;
 
+    this.islands = new Group();
+    this.islands.autoDraw = false;
+    this.islands.collider = "static";
+    this.islands.width = 130;
+
+    const islandA = new this.islands.Sprite(leftX + 300, centerY);
+    islandA.image = Assets.island5;
+    const islandB = new this.islands.Sprite(rightX - 300, centerY);
+    islandB.image = Assets.island6;
+    const islandC = new this.islands.Sprite(centerX, topY + 300);
+    islandC.image = Assets.island3;
+    const islandD = new this.islands.Sprite(centerX, bottomY - 300);
+    islandD.image = Assets.island4;
+
     this.bounds = new Group();
     this.bounds.autoDraw = false;
-    this.bounds.width = PLAY_AREA;
     this.bounds.height = 100;
-    this.bounds.color = "black";
+    this.bounds.width = PLAY_AREA + this.bounds.height;
     this.bounds.collider = "static";
 
     new this.bounds.Sprite(centerX, topY);
@@ -181,7 +194,7 @@ class GameMap {
     this.sea.draw();
     this.lagoon.draw();
     this.bases.draw();
-    this.bounds.draw();
+    this.islands.draw();
   }
 
   update() {

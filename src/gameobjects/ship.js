@@ -78,24 +78,19 @@ class Ship {
       x,
       y,
       [
-        [-25, 0],
-        [7, 55],
+        [-20, 0],
+        [2, 60],
         [36, 0],
-        [7, -55],
-        [-25, 0],
+        [2, -60],
+        [-20, 0],
       ],
       "dynamic"
     );
-    this.sprite.addCollider(0, -27, 50);
-    this.sprite.addCollider(0, 40, [
-      [5, 12],
-      [13, 15],
-      [13, -15],
-      [5, -12],
-      [-36, 0],
-    ]);
+    this.sprite.addCollider(0, -30, 40);
+    this.sprite.addCollider(0, 28, 40);
     this.sprite.image = Assets[`${color}Full`];
     this.sprite.friction = 0.1;
+    this.sprite.debug = true;
   }
 
   handleInput() {
