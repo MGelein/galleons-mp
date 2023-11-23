@@ -13,7 +13,7 @@ class GameMap {
     this.lagoonColliders = new Group();
     this.lagoonColliders.autoDraw = false;
     this.lagoonColliders.color = "#000";
-    this.lagoonColliders.push(this.lagoon);
+    this.lagoonColliders.collider = "static";
 
     new this.lagoonColliders.Sprite([
       [390, 120],
