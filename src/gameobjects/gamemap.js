@@ -1,3 +1,26 @@
+const PLAY_AREA = 3000;
+const BASE_VERTICES = [
+  [-25, 30],
+  [0, 234],
+  [15, 40],
+  [10, 10],
+  [66, 2],
+  [56, 3],
+  [20, 0],
+  [92, -5],
+  [40, -10],
+  [15, -10],
+  [0, -254],
+  [-15, -30],
+  [-10, -10],
+  [-86, 10],
+  [-16, 50],
+  [-30, 0],
+  [-30, 0],
+  [-26, -60],
+  [-76, 0],
+];
+
 class GameMap {
   constructor() {
     this.sea = new Sprite();
@@ -82,15 +105,87 @@ class GameMap {
 
     this.bases = new Group();
     this.bases.autoDraw = false;
-    this.bases.image = Assets.baseA;
     this.bases.width = 300;
     this.bases.height = 300;
+    this.bases.debug = true;
     this.bases.collider = "static";
+
+    const extraHeight = (PLAY_AREA - height) / 2;
+    const extraWidth = (PLAY_AREA - width) / 2;
+    const leftX = -extraWidth;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const rightX = extraWidth + width;
+    const topY = -extraHeight;
+    const bottomY = extraHeight + height;
+
+    const baseTopLeft = new Sprite(
+      leftX + 500,
+      topY + 500,
+      [...BASE_VERTICES],
+      "static"
+    );
+    baseTopLeft.image = Assets.baseA;
+    baseTopLeft.autoDraw = false;
+    this.bases.push(baseTopLeft);
+    baseTopLeft.rotation = 135;
+
+    const baseTopRight = new Sprite(
+      rightX - 500,
+      topY + 500,
+      [...BASE_VERTICES],
+      "static"
+    );
+    baseTopRight.image = Assets.baseB;
+    baseTopRight.autoDraw = false;
+    this.bases.push(baseTopRight);
+    baseTopRight.rotation = 225;
+
+    const baseBottomRight = new Sprite(
+      rightX - 500,
+      bottomY - 500,
+      [...BASE_VERTICES],
+      "static"
+    );
+    baseBottomRight.image = Assets.baseC;
+    baseBottomRight.autoDraw = false;
+    this.bases.push(baseBottomRight);
+    baseBottomRight.rotation = 315;
+
+    const baseBottomLeft = new Sprite(
+      leftX + 500,
+      bottomY - 500,
+      [...BASE_VERTICES],
+      "static"
+    );
+    baseBottomLeft.image = Assets.baseD;
+    baseBottomLeft.autoDraw = false;
+    this.bases.push(baseBottomLeft);
+    baseBottomLeft.rotation = 45;
+
+    this.bounds = new Group();
+    this.bounds.autoDraw = false;
+    this.bounds.width = PLAY_AREA;
+    this.bounds.height = 100;
+    this.bounds.color = "black";
+    this.bounds.collider = "static";
+
+    new this.bounds.Sprite(centerX, topY);
+    new this.bounds.Sprite(centerX, bottomY);
+    const leftBound = new this.bounds.Sprite(leftX, centerY);
+    const rightBound = new this.bounds.Sprite(rightX, centerY);
+    leftBound.rotation = rightBound.rotation = 90;
   }
 
   drawSprites() {
     this.sea.draw();
     this.lagoon.draw();
     this.bases.draw();
+    this.bounds.draw();
+  }
+
+  update() {
+    this.sea.x = floor(camera.x / 64) * 64;
+    this.sea.y = floor(camera.y / 64) * 64;
   }
 }

@@ -16,6 +16,7 @@ class Game extends GameState {
   }
 
   update() {
+    this.map.update();
     Ship.handleInput();
     Ship.updateAll();
   }

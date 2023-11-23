@@ -95,6 +95,7 @@ class Ship {
       [-36, 0],
     ]);
     this.sprite.image = Assets[`${color}Full`];
+    this.sprite.friction = 0.1;
   }
 
   handleInput() {
