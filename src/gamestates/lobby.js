@@ -116,6 +116,7 @@ class Lobby extends GameState {
     this.gameModeSelector.setSelectedValue(this.state.mode);
     this.gameTimeSelector.setSelectedValue(`${this.state.duration} minutes`);
     this.shipSelectors.forEach((ss) => ss.setPlayer(null));
+    this.myShipSelector?.onChange(() => {});
     this.state.players.forEach((playerName, i) => {
       this.shipSelectors[i].setPlayer(playerName);
       const player = this.state[playerName];
