@@ -85,7 +85,7 @@ class MenuOptions {
     }
     this.options.update();
 
-    if (netPlayer?.inRoom) GameState.setActive("lobby");
+    if (netPlayer?.inRoom) GameState.setActive(Lobby);
   }
 
   draw() {

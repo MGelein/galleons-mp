@@ -5,7 +5,11 @@ class Game extends GameState {
 
   setup() {
     this.map = new GameMap();
-    const ship = new Ship(width / 2, height / 2, "red");
+    const ship = new Ship(
+      width / 2,
+      height / 2,
+      storage.get("chosenShip") ?? "red"
+    );
     Ship.setControl(ship);
   }
 
@@ -21,5 +25,3 @@ class Game extends GameState {
     Ship.updateAll();
   }
 }
-
-const game = new Game();

@@ -49,8 +49,6 @@ class Boot extends GameState {
 
   nextState() {
     if (this.loading) return;
-    GameState.setActive("mainmenu");
+    GameState.setActive(MainMenu);
   }
 }
-
-const boot = new Boot();

@@ -35,5 +35,3 @@ class MainMenu extends GameState {
     this.title.draw();
   }
 }
-
-const mainmenu = new MainMenu();

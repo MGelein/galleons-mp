@@ -27,6 +27,8 @@ class GameMap {
     this.sea.autoDraw = false;
     this.sea.image = Assets.seaBg;
     this.sea.collider = "none";
+    this.sea.x = floor(camera.x / 64) * 64;
+    this.sea.y = floor(camera.y / 64) * 64;
 
     this.lagoon = new Sprite();
     this.lagoon.autoDraw = false;

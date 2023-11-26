@@ -1,4 +1,4 @@
-const DEBUG = location.port === "5500";
+const DEBUG = false; //location.port === "5500";
 
 function preload() {
   Assets.preload();
@@ -6,10 +6,10 @@ function preload() {
 }
 
 function setup() {
-  GameState.setActive("boot");
+  GameState.setActive(Boot);
   setupCanvas();
 
-  if (DEBUG) GameState.setActive("game");
+  if (DEBUG) GameState.setActive(Game);
 }
 
 function draw() {

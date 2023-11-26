@@ -103,7 +103,7 @@ class Lobby extends GameState {
         this.onStateChange();
         break;
       case LOAD_GAME:
-        GameState.setActive("game");
+        GameState.setActive(Game);
         break;
     }
   }
@@ -148,5 +148,3 @@ class Lobby extends GameState {
     }
   }
 }
-
-const lobby = new Lobby();

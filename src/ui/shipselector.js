@@ -55,6 +55,9 @@ class ShipSelector {
   setReady(ready) {
     this.ready = ready;
     this.setUIPrompt(ready ? "B" : "A");
+
+    const colorName = SHIP_COLORS[this.shipIndex];
+    if (ready) storage.set("chosenShip", colorName);
   }
 
   setPlayer(player) {

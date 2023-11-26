@@ -17,5 +17,3 @@ class Testing extends GameState {
     this.shipSelector.draw();
   }
 }
-
-const testing = new Testing();
