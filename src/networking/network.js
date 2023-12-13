@@ -103,9 +103,20 @@ class NetRoom {
   prepareGameState() {
     const duration = this.state.duration * 60;
     const mode = this.state.mode;
+    const playerData = {};
+    this.players.forEach(
+      (player) =>
+        (playerData[player] = {
+          pos: { x: -1, y: -1 },
+          acc: { x: 0, y: 0 },
+          rotationSpeed: 0,
+          color: this.state[player].color,
+        })
+    );
     this.state = {
       owner: storage.get("username"),
       players: this.players,
+      ...playerData,
       mode,
       duration,
     };

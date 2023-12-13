@@ -4,24 +4,29 @@ class Game extends GameState {
   }
 
   setup() {
+    Ship.init = false;
+    Ship.all = [];
     this.map = new GameMap();
-    const ship = new Ship(
-      width / 2,
-      height / 2,
-      storage.get("chosenShip") ?? "red"
-    );
-    Ship.setControl(ship);
+    netPlayer.sendCommand(STATE_REQ);
   }
 
   drawSprites() {
     this.map.drawSprites();
     Ship.drawAll();
-    Ship.followControl();
   }
 
   update() {
     this.map.update();
+    Ship.followControl();
     Ship.handleInput();
     Ship.updateAll();
+  }
+
+  onCommand(command, payload) {
+    switch (command) {
+      case STATE:
+        if (!Ship.init) Ship.initFromState(payload, this.map);
+        break;
+    }
   }
 }

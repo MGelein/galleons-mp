@@ -18,7 +18,26 @@ class Ship {
   static controlShip;
   static cameraVelX = 0;
   static cameraVelY = 0;
+  static init = false;
   static cameraTargetZoom = 1;
+
+  static initFromState(state, map) {
+    const players = state.players;
+    players.forEach((player, i) => {
+      const offsetX = i == 0 || i == 3 ? 100 : -100;
+      const offsetY = i == 0 || i == 1 ? 100 : -100;
+      const base = map.bases[i];
+      const playerData = state[player];
+      const ship = new Ship(
+        base.x + offsetX,
+        base.y + offsetY,
+        playerData.color,
+        i * 90 - 45
+      );
+
+      if (player === storage.get("username")) this.setControl(ship);
+    });
+  }
 
   static followControl() {
     if (!this.controlShip) return;
@@ -60,7 +79,7 @@ class Ship {
     this.controlShip = ship;
   }
 
-  constructor(x, y, color) {
+  constructor(x, y, color, rotation) {
     Ship.all.push(this);
     this.hp = 100;
     this.color = color;
@@ -97,6 +116,7 @@ class Ship {
     this.sprite.image = Assets[`${color}Full`];
     this.sprite.friction = 0.1;
     this.sprite.autoDraw = false;
+    this.sprite.rotation = rotation;
   }
 
   handleInput() {
